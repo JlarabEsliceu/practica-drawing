@@ -21,7 +21,7 @@ public class LoginController{
     public String loginPost(@RequestParam String username, @RequestParam String password,
                             Model model, HttpSession session){
         if (username.length() < 2){
-            model.addAttribute("messeg", "User name ha de tenir dues lletres minim");
+            model.addAttribute("message", "User name ha de tenir dues lletres minim");
             return "login";
         }
         if (loginService.checkLogin(username, password)) {

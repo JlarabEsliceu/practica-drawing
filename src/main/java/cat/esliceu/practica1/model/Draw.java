@@ -12,7 +12,7 @@ public class Draw {
     private LocalDateTime createdAt;
     private LocalDateTime   updatedAt;
 
-    public Draw(long id, String name, String owner, String objects, int objectCount, LocalDateTime createdAt, LocalDateTime updatedAt){
+    public Draw(String name, String owner, String objects, int objectCount){
         this.name = name;
         this.owner = owner;
         this.objects = objects;

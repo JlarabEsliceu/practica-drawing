@@ -4,14 +4,12 @@ package cat.esliceu.practica1.repo;
 import cat.esliceu.practica1.model.User;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class UserRepoImpl implements UserRepo {
-    List<User> list = List.of(
-            new User("toni", "1234"),
-            new User("jesus", "1234")
-            );
+    List<User> list = new ArrayList<>();
 
     @Override
     public User findByUsername(String username) {
@@ -21,5 +19,10 @@ public class UserRepoImpl implements UserRepo {
             }
         }
         return null;
+    }
+
+    @Override
+    public void addUser(User user){
+        list.add(user);
     }
 }
