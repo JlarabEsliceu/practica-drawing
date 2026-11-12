@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+<h1> Register </h1>
+<p th:if="${message}" th:text="${message}"></p>
+<form method="post">
+    Nom: <input type="text" name="name">
+    <br>
+    Nom d'usuari: <input type="text" name="username">
+    <br>
+    Password: <input type="password" name="password1">
+    <br>
+    Repeteix password: <input type="password" name="password2">
+    <br>
+    <input type="submit">
+</form>
+</body>
+</html>

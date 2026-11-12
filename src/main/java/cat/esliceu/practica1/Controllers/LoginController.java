@@ -40,4 +40,18 @@ public class LoginController{
         }
         return "private";
     }
+
+    @GetMapping("/register")
+    public String register(){return "register";}
+
+    @PostMapping("/register")
+    public String registerPost(@RequestParam String name, @RequestParam String username, @RequestParam String password1, @RequestParam String password2, Model model){
+        String error = loginService.register(name,username,password1,password2);
+        if(error != null){
+            model.addAttribute("message", error);
+            return "register";
+        }
+        return "redirect:/login";
+
+    }
 }

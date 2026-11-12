@@ -18,29 +18,25 @@ public class LoginService {
         return false;
     }
 
-    public String saveUser(String username, String password1, String password2){
-        if (!registerCheck(username,password1,password2).isEmpty()){return registerCheck(username,password1,password2);}
-        User user = new User(username,password1);
-        userRepo.addUser(user);
-        return "S'ha creat l'Usuari correctament";
-    }
+    public String register(String name,String username, String password1, String password2){
+        if (name == null || name.isBlank()) return "Falta name";
+        if (username == null || username.isBlank()) return "Falta el username";
+        username = username.trim();
+        name = name.trim();
 
-    public String registerCheck(String username, String password1, String password2){
-        if(userRepo.findByUsername(username) == null){
+        if (userRepo.findByUsername(username) != null){
             return "Aquest Usuari ya existeix";
         }
-        if (!password1.equals(password2)){
-            return "Els passwords no son iguals";
+        if(password1.length() < 5){
+            return "El password ha de tenir minim 5 caracters";
         }
-        if (checkPasswordLong(password1)){return "El password ha de tenir minim 5 caracters";}
-        return "";
+        if (!password1.equals(password2)){
+            return "Els passwords no coincideixen";
+        }
+        User user = new User(name,username,password1);
+        userRepo.addUser(user);
+        return null;
     }
 
-    public boolean checkPasswordLong(String password){
-        if(password.length() < 4){
-            return false;
-        }
-        return true;
-    }
 
 }
