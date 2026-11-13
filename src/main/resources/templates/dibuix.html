@@ -1,14 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>dibuix</title>
-    <link rel="script" href="../static/js/editor.js">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+    <nav>
+        <span th:text="${session.username}"></span>
+        <a href="/dibuix">Nou dibuix</a>
+        <a href="/historial">Historial</a>
+        <a href="/logout">Tancar sessió</a>
+    </nav>
     <h1>Editor de dibuix</h1>
-    <canvas style="height: 600px; width: 800px; border: 1px solid black;"></canvas>
-
+    <div>
+        <button id="circle">Cercle</button>
+        <button id="square">Quadrat</button>
+        <button id="triangle">Triangle</button>
+        <button id="star">Estrella</button>
+        <button id="freehand">Mà alçada</button>
+        <button id="line">Linia</button>
+        <input type="color" name="color" id="color">
+        <input type="range" name="tamany" id="size">
+    </div>
+    <div class="editor">
+        <canvas id="canvas" width="800" height="600"></canvas>
+        
+    </div>
 </body>
 </html>

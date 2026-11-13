@@ -9,7 +9,9 @@ import java.util.List;
 
 @Repository
 public class UserRepoImpl implements UserRepo {
-    List<User> list = new ArrayList<>();
+    List<User> list = new ArrayList<>(List.of(new User("admin","admin","admin")));
+
+
 
     @Override
     public User findByUsername(String username) {

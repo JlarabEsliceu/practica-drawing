@@ -26,20 +26,13 @@ public class LoginController{
         }
         if (loginService.checkLogin(username, password)) {
             session.setAttribute("username", username);
-            return "redirect:/private";
+            return "redirect:/dibuix";
         }
         model.addAttribute("message", "Usuari/pass incorrectes");
         return "login";
     }
 
-    @GetMapping("/private")
-    public String parPrivada(HttpSession session){
-        String username = (String) session.getAttribute("username");
-        if (username == null){
-            return "redirect:/login";
-        }
-        return "private";
-    }
+
 
     @GetMapping("/register")
     public String register(){return "register";}
