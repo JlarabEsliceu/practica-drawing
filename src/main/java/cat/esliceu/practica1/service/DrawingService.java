@@ -3,7 +3,6 @@ package cat.esliceu.practica1.service;
 import cat.esliceu.practica1.model.Draw;
 import cat.esliceu.practica1.repo.DrawRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jackson.autoconfigure.JacksonProperties;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
