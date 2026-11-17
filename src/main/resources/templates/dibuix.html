@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>dibuix</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
     <nav>
@@ -20,13 +20,17 @@
         <button id="triangle">Triangle</button>
         <button id="star">Estrella</button>
         <button id="freehand">Mà alçada</button>
-        <button id="line">Linia</button>
         <input type="color" name="color" id="color">
-        <input type="range" name="tamany" id="size">
+        <input type="range" min="1" max="100" value="50" name="tamany" id="size">
     </div>
-    <div class="editor">
+    <div id="editor">
         <canvas id="canvas" width="800" height="600"></canvas>
-        
+        <div>
+            <ul id="llista"> 
+            </ul>
+            <button id="esborrarTot">Esborrar tot</button>
+        </div>
     </div>
+    <script src="/js/editor.js"></script>
 </body>
 </html>
