@@ -29,7 +29,6 @@ public class DrawingService {
     }
 
     public boolean saveDraw(int id, String name, String objects, int count, String username){
-        boolean creatModificat = false;
         Draw draw;
 
         if (name == null || name.isEmpty()){
@@ -37,28 +36,29 @@ public class DrawingService {
         }
         if(id == 0) {
             draw = new Draw(name, username, objects, count);
-            draw.setCreatedAt(LocalDateTime.now());
-            draw.setUpdatedAt(LocalDateTime.now());
-            creatModificat = true;
+            drawRepo.addDraw(draw);
+            return true;
         }
         else{
             draw = drawRepo.findByDrawId(id);
-            if(draw != null && draw.getOwner().equals(username)){
-                draw.setName(name);
-                draw.setUpdatedAt(LocalDateTime.now());
-                draw.setObjectCount(count);
-                draw.setObjects(objects);
-                creatModificat = true;
+            if(draw != null && draw.getOwner().equals(username)) {
+                updateDraw(draw, name, objects, count);
+                return true;
             }
         }
-        if (creatModificat) drawRepo.addDraw(draw);
-        return creatModificat;
-
+        return false;
     }
 
     public void deleteDraw(int id, String username){
         if (drawRepo.findByDrawId(id) != null && drawRepo.findByDrawId(id).getOwner().equals(username)){
             drawRepo.deleteDraw(id);
         }
+    }
+
+    private void updateDraw(Draw draw, String name, String objects, int count){
+        draw.setName(name);
+        draw.setUpdatedAt(LocalDateTime.now());
+        draw.setObjectCount(count);
+        draw.setObjects(objects);
     }
 }

@@ -1,9 +1,31 @@
-#canvas{
-    border: 1px solid black;
+#editor {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-start;
 }
 
-#editor{
+/* El canvas no s'escala amb CSS per no desquadrar les coordenades del clic */
+.canvas-wrap {
+    overflow: auto;
+    max-width: 100%;
+}
+
+#canvas {
+    border: 1px solid #000;
+    background: #fff;
+    cursor: crosshair;
+    display: block;
+}
+
+.panell {
+    flex: 1;
+    min-width: 260px;
+    max-width: 360px;
+}
+
+#llista li {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
 }

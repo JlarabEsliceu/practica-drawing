@@ -6,20 +6,46 @@ let objectes = [];
 let tool = 'circle';
 let colorInput = document.getElementById('color');
 let sizeInput = document.getElementById('size');
+let dibuixant = false;
+let traçActual = null;
+let comptador = 0;
+let liniaActual = null;
+
 
 console.log(canvas)
 
-let eines = ['circle', 'square', 'triangle', 'star', 'freehand'];
+const eines = ['circle', 'square', 'triangle', 'star', 'freehand','line'];
 for (let i = 0; i < eines.length; i++) {
     let eina = document.getElementById(eines[i]);
     eina.addEventListener('click', function() {
         tool = eines[i];
+        liniaActual = null;
         console.log(tool);
     });
 }
 
 
 canvas.addEventListener('click',function(e){
+    if (tool === 'freehand') return;
+    if(tool === 'line'){
+        let punt = {x: e.offsetX, y: e.offsetY};
+        if(liniaActual === null){
+            liniaActual = {
+                eina: 'line',
+                points: [punt],
+                color: colorInput.value,
+                size: Number(sizeInput.value),
+                name: tool + '_' + (++comptador)
+            };
+            objectes.push(liniaActual)
+        }
+        else{
+            liniaActual.points.push(punt);
+        }
+        redraw();
+        renderList();
+        return;
+    }
     let x = e.offsetX;
     let y = e.offsetY;
     let obj = {
@@ -28,13 +54,61 @@ canvas.addEventListener('click',function(e){
         y: y,
         color: colorInput.value,
         size: Number(sizeInput.value),
-        name: tool + '_' + (objectes.length + 1)
+        name: tool + '_' + (++comptador)
     };
     objectes.push(obj);
     drawObject(obj);
     renderList();
 
 })
+
+canvas.addEventListener('dblclick', function(){
+    liniaActual = null;
+});
+
+canvas.addEventListener('mousedown', function(e){
+    if (tool !== 'freehand') return;
+    let x = e.offsetX;
+    let y = e.offsetY;
+
+    traçActual = {
+        eina: 'freehand',
+        points: [{x: x , y: y}],
+        color: colorInput.value,
+        size: Number(sizeInput.value),
+        name: 'freehand_' + (++comptador)
+    }
+
+    objectes.push(traçActual)
+    dibuixant = true;
+});
+
+canvas.addEventListener('mousemove',function(e){
+    if(!dibuixant) return;
+    traçActual.points.push({x: e.offsetX, y: e.offsetY});
+    redraw();
+})
+
+function acabarTraç(){
+    if(!dibuixant)return;
+    dibuixant = false;
+    traçActual = null;
+    renderList();
+}
+
+canvas.addEventListener('mouseup', acabarTraç);
+canvas.addEventListener('mouseleave', acabarTraç)
+
+let botoEsborrarTot = document.getElementById('esborrarTot')
+botoEsborrarTot.addEventListener('click', function(){
+    objectes = [];
+    redraw();
+    renderList();
+    liniaActual = null;
+
+
+})
+
 
 function pickTool(obj) {
     if(obj.eina === 'circle') {
@@ -67,13 +141,28 @@ function pickTool(obj) {
         }
         ctx.closePath();
     }
+    else if(obj.eina === 'freehand' || obj.eina === 'line'){
+        ctx.moveTo(obj.points[0].x, obj.points[0].y);
+        for(let i = 1; i < obj.points.length; i++){
+            ctx.lineTo(obj.points[i].x, obj.points[i].y);
+        }
+    }
 }
 
 function drawObject(obj) {
     ctx.beginPath();
-    ctx.fillStyle = obj.color;
     pickTool(obj);
-    ctx.fill();
+    if (obj.eina === 'freehand' || obj.eina === 'line'){
+        ctx.strokeStyle = obj.color;
+        ctx.lineWidth = obj.size / 5;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+    }
+    else{
+        ctx.fillStyle = obj.color;
+        ctx.fill();
+    }
 
 }
 
@@ -89,7 +178,32 @@ function renderList() {
     llista.innerHTML = '';
     for (let i = 0; i < objectes.length; i++) {
         let li = document.createElement('li');
-        li.textContent = objectes[i].name;
+        li.className = 'list-group-item'
+        let nom = document.createElement('span');
+        nom.textContent = objectes[i].name;
+        li.appendChild(nom);
+        let boton = document.createElement('button');
+        boton.className = 'btn btn-sm btn-outline-danger'
+        boton.textContent = 'X'
+        boton.addEventListener('click',function(e){
+            objectes.splice(i,1)
+            redraw()
+            renderList();
+            liniaActual = null;
+        })
+        li.appendChild(boton);
         llista.appendChild(li);
     }
 }
+
+// Save Form
+let saveForm = document.getElementById('saveForm')
+saveForm.addEventListener('submit',function(e){
+    if(objectes.length === 0) {
+        e.preventDefault();
+        return;
+    }
+    saveForm.getElementById('objects').value = JSON.stringify(objectes);
+    saveForm.getElementById('objectCount').value = objectes.length;
+})
+

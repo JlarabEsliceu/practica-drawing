@@ -17,6 +17,8 @@ public class Draw {
         this.owner = owner;
         this.objects = objects;
         this.objectCount = objectCount;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public int getId() {
