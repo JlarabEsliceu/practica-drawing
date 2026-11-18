@@ -26,14 +26,13 @@
         <span th:if="${draw != null}" th:text="${draw.name}"></span>
     </h1>
 
-    <!-- Avís quan es visualitza un dibuix d'un altre usuari -->
     <div class="alert alert-info" th:if="${draw != null and !propietari}">
         Estàs veient un dibuix de <strong th:text="${draw.owner}"></strong>. Només el pots visualitzar, no guardar-lo.
     </div>
 
-    <!-- Barra d'eines -->
     <div class="d-flex flex-wrap align-items-center gap-2 mb-3" th:if="${draw == null or propietari}">
         <div class="btn-group" role="group">
+            <button type="button" class="btn btn-outline-primary" id="select">Seleccionar</button>
             <button type="button" class="btn btn-outline-primary" id="circle">Cercle</button>
             <button type="button" class="btn btn-outline-primary" id="square">Quadrat</button>
             <button type="button" class="btn btn-outline-primary" id="triangle">Triangle</button>
@@ -41,19 +40,25 @@
             <button type="button" class="btn btn-outline-primary" id="freehand">Mà alçada</button>
             <button type="button" class="btn btn-outline-primary" id="line">Línia</button>
         </div>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-outline-secondary" id="desfer">Desfer</button>
+            <button type="button" class="btn btn-outline-secondary" id="refer">Refer</button>
+        </div>
         <label class="ms-3 mb-0" for="color">Color</label>
         <input class="form-control form-control-color" type="color" name="color" id="color">
         <label class="ms-3 mb-0" for="size">Mida</label>
         <input class="form-range" style="width: 150px;" type="range" min="1" max="100" value="50" name="tamany" id="size">
+        <label class="ms-3 mb-0" for="amplada">Amplada</label>
+        <input class="form-control" style="width: 90px;" type="number" id="amplada" value="800">
+        <label class="mb-0" for="alcada">Alçada</label>
+        <input class="form-control" style="width: 90px;" type="number" id="alcada" value="600">
     </div>
 
     <div id="editor">
-        <!-- Canvas -->
         <div class="canvas-wrap">
             <canvas id="canvas" width="800" height="600"></canvas>
         </div>
 
-        <!-- Llista d'objectes + desar -->
         <div class="panell">
             <div class="card mb-3">
                 <div class="card-header">Objectes</div>
@@ -63,8 +68,23 @@
                 </div>
             </div>
 
-            <!-- Només es pot desar un dibuix nou o un de propi -->
-            <div class="card" th:if="${draw == null or propietari}">
+            <div class="card mb-3" id="propietats" hidden th:if="${draw == null or propietari}">
+                <div class="card-header">Propietats</div>
+                <div class="card-body">
+                    <label class="form-label" for="propNom">Nom</label>
+                    <input class="form-control mb-2" type="text" id="propNom">
+                    <label class="form-label" for="propX">X</label>
+                    <input class="form-control mb-2" type="number" id="propX">
+                    <label class="form-label" for="propY">Y</label>
+                    <input class="form-control mb-2" type="number" id="propY">
+                    <label class="form-label" for="propMida">Mida</label>
+                    <input class="form-control mb-2" type="number" id="propMida">
+                    <label class="form-label" for="propColor">Color</label>
+                    <input class="form-control form-control-color" type="color" id="propColor">
+                </div>
+            </div>
+
+            <div class="card mb-3" th:if="${draw == null or propietari}">
                 <div class="card-header">Desar dibuix</div>
                 <div class="card-body">
                     <form method="post" th:action="@{/dibuix/save}" id="saveForm">
@@ -81,16 +101,22 @@
                     </form>
                 </div>
             </div>
+
+            <div class="card" th:if="${draw == null or propietari}">
+                <div class="card-header">Historial de canvis</div>
+                <ul id="registre" class="list-group list-group-flush"></ul>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Dibuix carregat des del servidor: el JSON de draw.objects, o null si és un dibuix nou -->
 <script th:inline="javascript">
     const dibuixInicial = /*[[${draw != null ? draw.objects : null}]]*/ null;
-    // true quan es visualitza un dibuix d'un altre usuari: no es pot modificar
     const nomesLectura = /*[[${draw != null and !propietari}]]*/ false;
+    const drawId = /*[[${draw != null ? draw.id : 0}]]*/ 0;
 </script>
+<script th:src="@{/js/historial.js}"></script>
+<script th:src="@{/js/accions.js}"></script>
 <script th:src="@{/js/editor.js}"></script>
 </body>
 </html>

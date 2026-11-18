@@ -5,7 +5,6 @@
     align-items: flex-start;
 }
 
-/* El canvas no s'escala amb CSS per no desquadrar les coordenades del clic */
 .canvas-wrap {
     overflow: auto;
     max-width: 100%;
