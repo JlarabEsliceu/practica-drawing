@@ -31,7 +31,7 @@ public class DrawingService {
     public boolean saveDraw(int id, String name, String objects, int count, String username){
         Draw draw;
 
-        if (name == null || name.isEmpty()){
+        if (name == null || name.isBlank()){
             name = "Dibuix_" + UUID.randomUUID().toString().substring(0,6);
         }
         if(id == 0) {
@@ -50,7 +50,8 @@ public class DrawingService {
     }
 
     public void deleteDraw(int id, String username){
-        if (drawRepo.findByDrawId(id) != null && drawRepo.findByDrawId(id).getOwner().equals(username)){
+        Draw draw = drawRepo.findByDrawId(id);
+        if (draw != null && draw.getOwner().equals(username)){
             drawRepo.deleteDraw(id);
         }
     }

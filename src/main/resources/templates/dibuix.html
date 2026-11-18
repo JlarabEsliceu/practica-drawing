@@ -21,10 +21,18 @@
 </nav>
 
 <div class="container-fluid">
-    <h1 class="h4 mb-3">Editor de dibuix</h1>
+    <h1 class="h4 mb-3">
+        <span th:if="${draw == null}">Nou dibuix</span>
+        <span th:if="${draw != null}" th:text="${draw.name}"></span>
+    </h1>
+
+    <!-- Avís quan es visualitza un dibuix d'un altre usuari -->
+    <div class="alert alert-info" th:if="${draw != null and !propietari}">
+        Estàs veient un dibuix de <strong th:text="${draw.owner}"></strong>. Només el pots visualitzar, no guardar-lo.
+    </div>
 
     <!-- Barra d'eines -->
-    <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-3" th:if="${draw == null or propietari}">
         <div class="btn-group" role="group">
             <button type="button" class="btn btn-outline-primary" id="circle">Cercle</button>
             <button type="button" class="btn btn-outline-primary" id="square">Quadrat</button>
@@ -50,12 +58,13 @@
             <div class="card mb-3">
                 <div class="card-header">Objectes</div>
                 <ul id="llista" class="list-group list-group-flush"></ul>
-                <div class="card-body">
+                <div class="card-body" th:if="${draw == null or propietari}">
                     <button type="button" class="btn btn-outline-danger btn-sm w-100" id="esborrarTot">Esborrar tot</button>
                 </div>
             </div>
 
-            <div class="card">
+            <!-- Només es pot desar un dibuix nou o un de propi -->
+            <div class="card" th:if="${draw == null or propietari}">
                 <div class="card-header">Desar dibuix</div>
                 <div class="card-body">
                     <form method="post" th:action="@{/dibuix/save}" id="saveForm">
@@ -76,6 +85,12 @@
     </div>
 </div>
 
+<!-- Dibuix carregat des del servidor: el JSON de draw.objects, o null si és un dibuix nou -->
+<script th:inline="javascript">
+    const dibuixInicial = /*[[${draw != null ? draw.objects : null}]]*/ null;
+    // true quan es visualitza un dibuix d'un altre usuari: no es pot modificar
+    const nomesLectura = /*[[${draw != null and !propietari}]]*/ false;
+</script>
 <script th:src="@{/js/editor.js}"></script>
 </body>
 </html>

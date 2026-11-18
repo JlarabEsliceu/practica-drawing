@@ -14,18 +14,21 @@ let liniaActual = null;
 
 console.log(canvas)
 
-const eines = ['circle', 'square', 'triangle', 'star', 'freehand','line'];
-for (let i = 0; i < eines.length; i++) {
-    let eina = document.getElementById(eines[i]);
-    eina.addEventListener('click', function() {
-        tool = eines[i];
-        liniaActual = null;
-        console.log(tool);
-    });
+if(!nomesLectura){
+    const eines = ['circle', 'square', 'triangle', 'star', 'freehand','line'];
+    for (let i = 0; i < eines.length; i++) {
+        let eina = document.getElementById(eines[i]);
+        eina.addEventListener('click', function() {
+            tool = eines[i];
+            liniaActual = null;
+            console.log(tool);
+        });
+    }
 }
 
 
 canvas.addEventListener('click',function(e){
+    if(nomesLectura) return;
     if (tool === 'freehand') return;
     if(tool === 'line'){
         let punt = {x: e.offsetX, y: e.offsetY};
@@ -67,6 +70,7 @@ canvas.addEventListener('dblclick', function(){
 });
 
 canvas.addEventListener('mousedown', function(e){
+    if(nomesLectura) return;
     if (tool !== 'freehand') return;
     let x = e.offsetX;
     let y = e.offsetY;
@@ -99,15 +103,15 @@ function acabarTraç(){
 canvas.addEventListener('mouseup', acabarTraç);
 canvas.addEventListener('mouseleave', acabarTraç)
 
-let botoEsborrarTot = document.getElementById('esborrarTot')
-botoEsborrarTot.addEventListener('click', function(){
-    objectes = [];
-    redraw();
-    renderList();
-    liniaActual = null;
-
-
-})
+if(!nomesLectura){
+    let botoEsborrarTot = document.getElementById('esborrarTot')
+    botoEsborrarTot.addEventListener('click', function(){
+        objectes = [];
+        redraw();
+        renderList();
+        liniaActual = null;
+    })
+}
 
 
 function pickTool(obj) {
@@ -182,28 +186,40 @@ function renderList() {
         let nom = document.createElement('span');
         nom.textContent = objectes[i].name;
         li.appendChild(nom);
-        let boton = document.createElement('button');
-        boton.className = 'btn btn-sm btn-outline-danger'
-        boton.textContent = 'X'
-        boton.addEventListener('click',function(e){
-            objectes.splice(i,1)
-            redraw()
-            renderList();
-            liniaActual = null;
-        })
-        li.appendChild(boton);
+        if(!nomesLectura){
+            let boton = document.createElement('button');
+            boton.className = 'btn btn-sm btn-outline-danger'
+            boton.textContent = 'X'
+            boton.addEventListener('click',function(e){
+                objectes.splice(i,1)
+                redraw()
+                renderList();
+                liniaActual = null;
+            })
+            li.appendChild(boton);
+        }
         llista.appendChild(li);
     }
 }
 
 // Save Form
 let saveForm = document.getElementById('saveForm')
-saveForm.addEventListener('submit',function(e){
-    if(objectes.length === 0) {
-        e.preventDefault();
-        return;
-    }
-    saveForm.getElementById('objects').value = JSON.stringify(objectes);
-    saveForm.getElementById('objectCount').value = objectes.length;
-})
+if(saveForm != null){
+    saveForm.addEventListener('submit',function(e){
+        if(objectes.length === 0) {
+            e.preventDefault();
+            alert("El dibuix esta buit");
+            return;
+        }
+        document.getElementById('objects').value = JSON.stringify(objectes);
+        document.getElementById('objectCount').value = objectes.length;
+    })
+}
+
+if(dibuixInicial != null){
+    objectes = JSON.parse(dibuixInicial)
+    comptador = objectes.length;
+    redraw();
+    renderList();
+}
 
